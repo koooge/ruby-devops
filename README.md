@@ -1,10 +1,12 @@
 # ruby-devops
-for helping to develop ruby
+ruby-devops helps us to develop ruby.
 
-## deploy
+- opengrok: Ruby codes viewer on browser
+
+## Usage
 ```
 % docker-compose up -d
 ```
 
 ## opengrok
- connect to `http://host:8888/source`
+Connect to `http://<hostname>:8888/source`
