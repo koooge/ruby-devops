@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  opengrok:
+    build: opengrok
+    container_name: ruby-devops-opengrok
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./opengrok/src:/src
+    restart: always
+
+volumes:
+  data:
