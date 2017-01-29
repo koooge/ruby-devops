@@ -14,7 +14,7 @@ ENV LANG=en_US.UTF-8 \
 
 RUN apt-get update \
     && apt-get install -y openjdk-7-jre-headless exuberant-ctags git subversion mercurial tomcat7 wget \
-    && rm -rf /var/lib/apt/lists.*
+    && apt-get clean && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists.*
 
 RUN mkdir $OPENGROK_DIR; \
     mkdir $OPENGROK_DIR/etc; \
