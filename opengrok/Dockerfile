@@ -1,31 +1,31 @@
-FROM ubuntu:14.04
+FROM tomcat:8-jre8
 MAINTAINER koooge <koooooge@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV OPENGROK_DIR /var/opengrok
 
-RUN echo Asia/Tokyo > /etc/timezone
-RUN dpkg-reconfigure tzdata
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends locales \
+    exuberant-ctags \
+    subversion git && \
+    apt-get clean && \
+    rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
-RUN locale-gen en_US.UTF-8
-ENV LANG=en_US.UTF-8 \
-    LANGUAGE=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8
+RUN echo "Asia/Tokyo" > /etc/timezone && \
+    dpkg-reconfigure tzdata
 
-RUN apt-get update \
-    && apt-get install -y openjdk-7-jre-headless exuberant-ctags git subversion mercurial tomcat7 wget \
-    && apt-get clean && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists.*
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen && \
+    update-locale LANG="en_US.UTF-8"
 
-RUN mkdir $OPENGROK_DIR; \
-    mkdir $OPENGROK_DIR/etc; \
-    mkdir $OPENGROK_DIR/data
+RUN mkdir -p $OPENGROK_DIR/etc && \
+    mkdir -p $OPENGROK_DIR/data && \
+    mkdir -p $OPENGROK_DIR/src
 
-RUN wget -O - https://github.com/OpenGrok/OpenGrok/files/213268/opengrok-0.12.1.5.tar.gz | tar zx
-RUN mv opengrok-* opengrok
+RUN wget -O - https://github.com/OpenGrok/OpenGrok/releases/download/1.0/opengrok-1.0.tar.gz | tar zxvf -
+RUN mv opengrok-* /opengrok
 
-RUN mkdir /src \
-    && ln -s /src $OPENGROK_DIR/src
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/bin/bash", "/docker-entrypoint.sh"]
 
-ADD run.sh /usr/local/bin/run
-
-ENTRYPOINT ["/usr/local/bin/run"]
+EXPOSE 8080
