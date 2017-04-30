@@ -1,3 +1,7 @@
+# Usage
+# up: `docker-compose up -d`
+# down: `docker-compose down -v`
+
 version: "3"
 
 services:
@@ -9,6 +13,15 @@ services:
       - "8888:8080"
     volumes:
       - ./opengrok/src:/src
+
+  jenkins:
+    image: jenkins
+    container_name: ruby-jenkins
+    restart: always
+    ports:
+      - "49001:8080"
+    volumes:
+      - ./jenkins:/var/jenkins_home
 
 volumes:
   data:
